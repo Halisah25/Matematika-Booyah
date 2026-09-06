@@ -17,13 +17,13 @@ Route::get('/checkout', function () {
 
 Route::post('/checkout', function (\Illuminate\Http\Request $request) {
 
-    // Set konfigurasi Midtrans
-    Config::$serverKey = config('midtrans.server_key');
-    Config::$isProduction = config('midtrans.is_production');
-    Config::$isSanitized = config('midtrans.is_sanitized');
-    Config::$is3ds = config('midtrans.is_3ds');
+    // Set konfigurasi Midtrans mengambil dari config/services.php
+    Config::$serverKey = config('services.midtrans.server_key');
+    Config::$isProduction = config('services.midtrans.is_production');
+    Config::$isSanitized = true;
+    Config::$is3ds = true;
 
-    // Buat ID transaksi unik (gabungan waktu sekarang + angka acak)
+    // Buat ID transaksi unik
     $orderId = 'MTKBY-' . time();
 
     // Siapkan data transaksi yang akan dikirim ke Midtrans
@@ -50,8 +50,7 @@ Route::post('/checkout', function (\Illuminate\Http\Request $request) {
         'status' => 'pending',
     ]);
 
-    // Simpan ke session biasa (bukan flash), supaya data tidak hilang
-    // saat pindah dari /payment ke /success
+    // Simpan ke session
     session([
         'snap_token' => $snapToken,
         'nama' => $request->nama,
@@ -67,21 +66,16 @@ Route::get('/payment', function () {
 });
 
 Route::get('/success', function () {
-
-    // Halaman ini hanya menampilkan tampilan sukses.
-    // Update status & kirim email sepenuhnya ditangani oleh webhook
-    // di /midtrans/callback, supaya lebih akurat dan tidak duplikat.
-
     return view('success');
 });
 
 Route::post('/midtrans/callback', function (\Illuminate\Http\Request $request) {
 
-    // Set konfigurasi Midtrans (sama seperti di checkout)
-    Config::$serverKey = config('midtrans.server_key');
-    Config::$isProduction = config('midtrans.is_production');
-    Config::$isSanitized = config('midtrans.is_sanitized');
-    Config::$is3ds = config('midtrans.is_3ds');
+    // Set konfigurasi Midtrans mengambil dari config/services.php
+    Config::$serverKey = config('services.midtrans.server_key');
+    Config::$isProduction = config('services.midtrans.is_production');
+    Config::$isSanitized = true;
+    Config::$is3ds = true;
 
     $notif = new \Midtrans\Notification();
 
@@ -108,8 +102,6 @@ Route::post('/midtrans/callback', function (\Illuminate\Http\Request $request) {
     $order = Order::where('order_id', $orderId)->first();
 
     if ($order) {
-        // Cegah kirim email dobel: hanya kirim jika status SEBELUMNYA
-        // belum "success", tapi SEKARANG jadi "success"
         $wasNotSuccess = $order->status !== 'success';
 
         $order->update([
@@ -129,7 +121,7 @@ Route::post('/midtrans/callback', function (\Illuminate\Http\Request $request) {
     return response()->json(['message' => 'Notifikasi diterima']);
 });
 
-// Halaman download (menampilkan 3 tombol Level A, B, C)
+// Halaman download
 Route::get('/download/{orderId}', function ($orderId) {
 
     $order = Order::where('order_id', $orderId)
@@ -143,7 +135,7 @@ Route::get('/download/{orderId}', function ($orderId) {
     return view('download', ['order' => $order]);
 });
 
-// Proses download file per level (a/b/c)
+// Proses download file per level
 Route::get('/download/{orderId}/{level}', function ($orderId, $level) {
 
     $order = Order::where('order_id', $orderId)
