@@ -23,10 +23,10 @@ $ensureDatabaseReady = function () {
 
     try {
         if (!Schema::hasTable('orders')) {
-            Artisan::call('migrate', ['--force' => true]);
+            Artisan::call('migrate:fresh', ['--force' => true]);
         }
     } catch (\Exception $e) {
-        // Abaikan error jika migrasi sudah berjalan
+        // Abaikan error jika migrasi sedang berjalan
     }
 };
 
