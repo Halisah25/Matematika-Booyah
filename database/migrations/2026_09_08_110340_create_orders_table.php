@@ -9,16 +9,16 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+        public function up(): void
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->string('order_id')->unique();      // ID transaksi dari Midtrans, misal MTKBY-1787...
+            $table->string('order_id');
             $table->string('nama');
             $table->string('email');
-            $table->integer('gross_amount');            // Total pembayaran (dalam rupiah)
-            $table->string('status')->default('pending'); // pending / success / failed / expired
-            $table->string('payment_type')->nullable();  // VA, GoPay, dll (diisi nanti dari webhook)
+            $table->decimal('gross_amount', 12, 2);
+            $table->string('status')->default('pending');
+            $table->string('payment_type')->nullable();
             $table->timestamps();
         });
     }
