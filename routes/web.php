@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Storage;
 use Midtrans\Config;
 use Midtrans\Snap;
 
@@ -165,7 +164,7 @@ Route::get('/download/{orderId}', function ($orderId) use ($ensureDatabaseReady)
     return view('download', ['order' => $order]);
 });
 
-// Proses download file per level
+// Proses download file per level (langsung dari folder public/modules)
 Route::get('/download/{orderId}/{level}', function ($orderId, $level) use ($ensureDatabaseReady) {
 
     $ensureDatabaseReady();
@@ -184,24 +183,11 @@ Route::get('/download/{orderId}/{level}', function ($orderId, $level) use ($ensu
         abort(404, 'Level tidak valid.');
     }
 
-    // Opsi jalur lokasi file di server Railway
-    $paths = [
-        storage_path("app/private/modules/level-{$level}.pdf"),
-        storage_path("app/modules/level-{$level}.pdf"),
-        base_path("storage/app/private/modules/level-{$level}.pdf"),
-    ];
+    $path = public_path("modules/level-{$level}.pdf");
 
-    foreach ($paths as $path) {
-        if (file_exists($path)) {
-            return response()->download($path, 'Matematika-Booyah-Level-' . strtoupper($level) . '.pdf');
-        }
+    if (!file_exists($path)) {
+        abort(404, 'File PDF tidak ditemukan di folder public/modules.');
     }
 
-    // Fallback menggunakan Storage Facade
-    $relativePath = "private/modules/level-{$level}.pdf";
-    if (Storage::exists($relativePath)) {
-        return Storage::download($relativePath, 'Matematika-Booyah-Level-' . strtoupper($level) . '.pdf');
-    }
-
-    abort(404, 'File PDF tidak ditemukan di server.');
+    return response()->download($path, 'Matematika-Booyah-Level-' . strtoupper($level) . '.pdf');
 });
