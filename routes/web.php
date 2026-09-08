@@ -164,7 +164,7 @@ Route::get('/download/{orderId}', function ($orderId) use ($ensureDatabaseReady)
     return view('download', ['order' => $order]);
 });
 
-// Proses download file per level (langsung dari folder public/modules)
+// Proses download file per level (Pencarian Fleksibel di public/modules)
 Route::get('/download/{orderId}/{level}', function ($orderId, $level) use ($ensureDatabaseReady) {
 
     $ensureDatabaseReady();
@@ -183,11 +183,22 @@ Route::get('/download/{orderId}/{level}', function ($orderId, $level) use ($ensu
         abort(404, 'Level tidak valid.');
     }
 
-    $path = public_path("modules/level-{$level}.pdf");
+    $dir = public_path('modules');
 
-    if (!file_exists($path)) {
-        abort(404, 'File PDF tidak ditemukan di folder public/modules.');
+    if (is_dir($dir)) {
+        $files = scandir($dir);
+        foreach ($files as $file) {
+            if (preg_match("/level[-_ ]?{$level}\.pdf$/i", $file)) {
+                $fullPath = $dir . '/' . $file;
+                return response()->download($fullPath, 'Matematika-Booyah-Level-' . strtoupper($level) . '.pdf');
+            }
+        }
     }
 
-    return response()->download($path, 'Matematika-Booyah-Level-' . strtoupper($level) . '.pdf');
+    $standardPath = public_path("modules/level-{$level}.pdf");
+    if (file_exists($standardPath)) {
+        return response()->download($standardPath, 'Matematika-Booyah-Level-' . strtoupper($level) . '.pdf');
+    }
+
+    abort(404, 'File PDF tidak ditemukan di folder public/modules.');
 });
