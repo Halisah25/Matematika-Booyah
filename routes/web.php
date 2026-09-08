@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Artisan;
 use Midtrans\Config;
 use Midtrans\Snap;
 
-// Helper function untuk memastikan DB & Tabel siap digunakan
-function ensureDatabaseReady() {
+// Closure variabel untuk otomasi database agar tidak redeclare error
+$ensureDatabaseReady = function () {
     if (config('database.default') === 'sqlite') {
         $path = config('database.connections.sqlite.database');
         if ($path && !file_exists($path) && $path !== ':memory:') {
@@ -28,7 +28,7 @@ function ensureDatabaseReady() {
     } catch (\Exception $e) {
         // Abaikan error jika migrasi sudah berjalan
     }
-}
+};
 
 Route::get('/', function () {
     return view('welcome');
@@ -38,10 +38,10 @@ Route::get('/checkout', function () {
     return view('checkout');
 });
 
-Route::post('/checkout', function (\Illuminate\Http\Request $request) {
+Route::post('/checkout', function (\Illuminate\Http\Request $request) use ($ensureDatabaseReady) {
 
     // Pastikan database SQLite dan tabel orders otomatis dibuat jika terhapus
-    ensureDatabaseReady();
+    $ensureDatabaseReady();
 
     // Set konfigurasi Midtrans mengambil dari config/services.php
     Config::$serverKey = config('services.midtrans.server_key');
@@ -95,10 +95,10 @@ Route::get('/success', function () {
     return view('success');
 });
 
-Route::post('/midtrans/callback', function (\Illuminate\Http\Request $request) {
+Route::post('/midtrans/callback', function (\Illuminate\Http\Request $request) use ($ensureDatabaseReady) {
 
     // Pastikan database SQLite dan tabel orders otomatis dibuat jika terhapus
-    ensureDatabaseReady();
+    $ensureDatabaseReady();
 
     // Set konfigurasi Midtrans mengambil dari config/services.php
     Config::$serverKey = config('services.midtrans.server_key');
@@ -151,9 +151,9 @@ Route::post('/midtrans/callback', function (\Illuminate\Http\Request $request) {
 });
 
 // Halaman download
-Route::get('/download/{orderId}', function ($orderId) {
+Route::get('/download/{orderId}', function ($orderId) use ($ensureDatabaseReady) {
 
-    ensureDatabaseReady();
+    $ensureDatabaseReady();
 
     $order = Order::where('order_id', $orderId)
         ->where('status', 'success')
@@ -167,9 +167,9 @@ Route::get('/download/{orderId}', function ($orderId) {
 });
 
 // Proses download file per level
-Route::get('/download/{orderId}/{level}', function ($orderId, $level) {
+Route::get('/download/{orderId}/{level}', function ($orderId, $level) use ($ensureDatabaseReady) {
 
-    ensureDatabaseReady();
+    $ensureDatabaseReady();
 
     $order = Order::where('order_id', $orderId)
         ->where('status', 'success')
