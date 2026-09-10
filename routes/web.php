@@ -95,21 +95,21 @@ Route::get('/success', function () {
 
 Route::post('/midtrans/callback', function (\Illuminate\Http\Request $request) use ($ensureDatabaseReady) {
 
-    // Pastikan database SQLite dan tabel orders otomatis dibuat jika terhapus
     $ensureDatabaseReady();
 
-    // Set konfigurasi Midtrans mengambil dari config/services.php
     Config::$serverKey = config('services.midtrans.server_key');
     Config::$isProduction = config('services.midtrans.is_production');
     Config::$isSanitized = true;
     Config::$is3ds = true;
 
-    $notif = new \Midtrans\Notification();
+    $payload = json_decode($request->getContent(), true) ?? $request->all();
 
-    $orderId = $notif->order_id;
-    $transactionStatus = $notif->transaction_status;
-    $paymentType = $notif->payment_type;
-    $fraudStatus = $notif->fraud_status;
+    \Illuminate\Support\Facades\Log::info('Midtrans callback masuk', $payload);
+
+    $orderId = $payload['order_id'] ?? null;
+    $transactionStatus = $payload['transaction_status'] ?? null;
+    $paymentType = $payload['payment_type'] ?? null;
+    $fraudStatus = $payload['fraud_status'] ?? null;
 
     // Tentukan status akhir berdasarkan respons dari Midtrans
     $status = 'pending';
