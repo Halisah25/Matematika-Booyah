@@ -6,7 +6,7 @@
     <title>Matematika Booyah!</title>
     
     <!-- Tag Favicon -->
-    <link rel="icon" type="image/png" href="{{ asset('logo.png') }}?v=999">
+    <link rel="icon" href="{{ asset('favicon.ico') }}?v=2" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Suez+One&display=swap" rel="stylesheet">
     <style>
