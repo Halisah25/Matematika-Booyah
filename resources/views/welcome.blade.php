@@ -29,7 +29,15 @@
         .logo { display: flex; align-items: center; gap: 10px; font-weight: bold; font-size: 19px; }
         .logo-icon { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
         nav ul { display: flex; gap: 28px; list-style: none; }
-        nav a { text-decoration: none; color: #333; font-size: 14px; font-weight: 600; }
+        nav a { text-decoration: none; color: #333; font-size: 14px; font-weight: 600; transition: color 0.3s ease; }
+        
+        /* Active State CSS untuk Navigasi */
+        nav a.active {
+            color: #E2577A;
+            border-bottom: 2px solid #E2577A;
+            padding-bottom: 4px;
+        }
+
         .btn-primary { background: #E2577A; color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; }
         .btn-outline { background: #fff; color: #E2577A; border: 2px solid #E14D75; padding: 10px 22px; border-radius: 8px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block; font-size: 14px; }
 
@@ -562,11 +570,11 @@
             </div>
             <nav>
                 <ul>
-                    <li><a href="#beranda">Beranda</a></li>
-                    <li><a href="#tentang">Tentang</a></li>
-                    <li><a href="#modul">Modul</a></li>
-                    <li><a href="#testimoni">Testimoni</a></li>
-                    <li><a href="#faq">FAQ</a></li>
+                    <li><a href="#beranda" class="nav-link active">Beranda</a></li>
+                    <li><a href="#tentang" class="nav-link">Tentang</a></li>
+                    <li><a href="#modul" class="nav-link">Modul</a></li>
+                    <li><a href="#testimoni" class="nav-link">Testimoni</a></li>
+                    <li><a href="#faq" class="nav-link">FAQ</a></li>
                 </ul>
             </nav>
             <a href="{{ url('/checkout') }}" class="btn-primary">Beli Sekarang</a>
@@ -901,6 +909,32 @@
             </div>
         </div>
     </section>
+
+    <!-- ===== JAVASCRIPT UNTUK ACTIVE STATE SCROLL ===== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('nav ul li a');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop - 120; // Penyesuaian offset dengan header
+                    const sectionHeight = section.offsetHeight;
+                    if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${current}`) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
 
 </body>
 </html>
