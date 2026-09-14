@@ -11,6 +11,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Suez+One&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        section[id] { scroll-margin-top: 90px; }
         body { font-family: 'Segoe UI', Arial, sans-serif; background: #FFF9F0; color: #333; line-height: 1.6; }
         .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
 
@@ -560,18 +562,18 @@
             </div>
             <nav>
                 <ul>
-                    <li><a href="#">Beranda</a></li>
-                    <li><a href="#">Tentang</a></li>
-                    <li><a href="#">Modul</a></li>
-                    <li><a href="#">Testimoni</a></li>
-                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#beranda">Beranda</a></li>
+                    <li><a href="#tentang">Tentang</a></li>
+                    <li><a href="#modul">Modul</a></li>
+                    <li><a href="#testimoni">Testimoni</a></li>
+                    <li><a href="#faq">FAQ</a></li>
                 </ul>
             </nav>
             <a href="{{ url('/checkout') }}" class="btn-primary">Beli Sekarang</a>
         </div>
     </header>
 
-    <section class="hero">
+    <section class="hero" id="beranda">
         <div class="container hero-inner">
 
             <div class="hero-text">
@@ -616,7 +618,7 @@
     </section>
 
     <!-- ===== PAIN POINTS SECTION 9 ===== -->
-    <section class="pain-points">
+    <section class="pain-points" id="tentang">
         <span class="pp-deco pp-flash">⚡</span>
         <span class="pp-deco pp-love">💗</span>
         <span class="pp-deco pp-swirl-top">🔄</span>
@@ -639,7 +641,7 @@
     </section>
 
     <!-- ===== LEVELS SECTION ===== -->
-    <section class="levels">
+    <section class="levels" id="modul">
         <div class="container levels-inner">
             <div class="level-cards">
                 <div class="level-card">
@@ -754,7 +756,7 @@
     </section>
 
     <!-- ===== TESTIMONIALS SECTION ===== -->
-    <section class="testimonials">
+    <section class="testimonials" id="testimoni">
         <div class="container">
             <h2>Apa kata bunda-bunda lain</h2>
             <div class="testimonial-grid">
@@ -827,7 +829,7 @@
     </section>
 
     <!-- ===== FAQ SECTION ===== -->
-    <section class="faq-section">
+    <section class="faq-section" id="faq">
         <div class="container">
             <h2>Pertanyaan yang sering ditanyakan</h2>
             <div class="faq-grid">
