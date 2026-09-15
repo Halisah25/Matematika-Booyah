@@ -3,8 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,25 +20,21 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Otomatis buat file database SQLite jika terhapus saat server restart
-        if (config('database.default') === 'sqlite') {
-            $path = config('database.connections.sqlite.database');
-            if ($path && !file_exists($path) && $path !== ':memory:') {
-                // Buat direktori database jika belum ada
-                if (!file_exists(dirname($path))) {
-                    mkdir(dirname($path), 0755, true);
-                }
-                touch($path);
-            }
+        // Paksa semua URL yang dihasilkan Laravel (url(), route(), asset(), dll)
+        // selalu memakai skema HTTPS. Ini penting karena Railway berjalan di
+        // balik proxy, sehingga Laravel kadang salah mendeteksi skema dan
+        // menghasilkan link http:// meskipun situsnya sudah https://.
+        // Link http:// inilah yang menyebabkan tombol Download diblokir
+        // browser karena dianggap "Mixed Content".
+        if (str_contains(config('app.url'), 'https://')) {
+            URL::forceScheme('https');
         }
 
-        // Otomatis jalankan migrasi jika tabel orders belum terbentuk
-        try {
-            if (!Schema::hasTable('orders')) {
-                Artisan::call('migrate', ['--force' => true]);
-            }
-        } catch (\Exception $e) {
-            // Mengabaikan error saat proses build awal
-        }
+        // CATATAN: Logika auto-migrate (Artisan::call('migrate')) yang dulu
+        // ada di sini sudah DIHAPUS. Migrasi database sekarang ditangani
+        // secara resmi oleh Railway lewat "Pre-deploy Command" di Settings
+        // (php artisan migrate --force). Menjalankannya lagi di sini akan
+        // menyebabkan dua proses migrate berjalan bersamaan (race condition)
+        // yang membuat aplikasi crash — persis seperti insiden sebelumnya.
     }
 }
