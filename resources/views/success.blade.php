@@ -51,7 +51,7 @@
             font-size: 13px;
             margin: 0 auto 20px;
             max-width: 400px;
-            text-align: center; /* Disesuaikan ke tengah sesuai figma */
+            text-align: center;
         }
         .email-box .desc { color: #555; margin-bottom: 2px; }
         .email-box .email { font-weight: 800; color: #222; font-size: 15px; margin-bottom: 4px; }
@@ -85,7 +85,7 @@
             width: 100%;
             max-width: 400px;
             background: #fff;
-            color: #333; /* Warna teks utama lebih gelap netral */
+            color: #333;
             border: 1px solid #E2577A;
             padding: 12px;
             border-radius: 8px;
@@ -99,7 +99,7 @@
 
         /* ===== FOOTER BAND ===== */
         .footer-band {
-            background: #FEF5DA; /* Menggunakan krem lembut khas figma */
+            background: #FEF5DA;
             margin-top: 20px;
             padding: 30px 0;
         }
@@ -174,11 +174,14 @@
 
                 <div class="email-box">
                     <div class="desc">E-modul telah dikirim ke email</div>
-                    <div class="email">{{ session('email', 'email@contoh.com') }}</div>
+                    <div class="email">{{ $order->email ?? session('email', 'email@contoh.com') }}</div>
                     <div class="hint">Silahkan cek inbox atau folder spam jika email tidak ditemukan.</div>
                 </div>
 
-                <a href="#" class="btn-download"><i class="fa-solid fa-download"></i> Donwload Lagi</a>
+                <!-- Perbaikan URL Tombol Download Lagi -->
+                <a href="{{ url('/download/' . ($order->order_id ?? session('order_id'))) }}" class="btn-download">
+                    <i class="fa-solid fa-download"></i> Download Lagi
+                </a>
                 <a href="{{ url('/') }}" class="btn-home"><i class="fa-solid fa-house"></i> Kembali ke Beranda</a>
             </div>
 
