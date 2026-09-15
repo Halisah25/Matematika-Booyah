@@ -9,23 +9,13 @@ use Illuminate\Support\Facades\Artisan;
 use Midtrans\Config;
 use Midtrans\Snap;
 
-// Closure variabel untuk otomasi database agar tidak redeclare error
+// Migrasi database sekarang ditangani otomatis oleh Railway lewat
+// "Pre-deploy Command" (php artisan migrate --force) di Settings service.
+// Fungsi ini sengaja dikosongkan agar tidak lagi memanggil Artisan::call('migrate')
+// pada setiap request, karena itu menyebabkan race condition (dua proses migrasi
+// jalan bersamaan) yang membuat aplikasi crash.
 $ensureDatabaseReady = function () {
-    if (config('database.default') === 'sqlite') {
-        $path = config('database.connections.sqlite.database');
-        if ($path && !file_exists($path) && $path !== ':memory:') {
-            if (!file_exists(dirname($path))) {
-                mkdir(dirname($path), 0755, true);
-            }
-            touch($path);
-        }
-    }
-
-    try {
-        Artisan::call('migrate', ['--force' => true]);
-    } catch (\Exception $e) {
-        // Abaikan error jika migrasi sedang berjalan
-    }
+    // tidak melakukan apa-apa lagi — migrasi sudah ditangani oleh Pre-deploy Command
 };
 
 Route::get('/', function () {
