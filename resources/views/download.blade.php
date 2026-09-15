@@ -98,8 +98,8 @@
                     <p>Matematika Booyah - Untuk Sekolah Dasar</p>
                 </div>
             </div>
-            <a href="{{ url('/download/' . $order->order_id . '/a') }}" class="btn-download" download target="_blank" rel="noopener">
-                <i class="fa-solid fa-download"></i> Download
+            <a href="{{ url('/download/' . $order->order_id . '/a') }}" class="btn-download" download>
+            <i class="fa-solid fa-download"></i> Download
             </a>
         </div>
 
@@ -111,8 +111,8 @@
                     <p>Matematika Booyah - Untuk Sekolah Dasar</p>
                 </div>
             </div>
-            <a href="{{ url('/download/' . $order->order_id . '/b') }}" class="btn-download" download target="_blank" rel="noopener">
-                <i class="fa-solid fa-download"></i> Download
+            <a href="{{ url('/download/' . $order->order_id . '/b') }}" class="btn-download" download>
+            <i class="fa-solid fa-download"></i> Download
             </a>
         </div>
 
@@ -124,8 +124,8 @@
                     <p>Matematika Booyah - Untuk Sekolah Dasar</p>
                 </div>
             </div>
-            <a href="{{ url('/download/' . $order->order_id . '/c') }}" class="btn-download" download target="_blank" rel="noopener">
-                <i class="fa-solid fa-download"></i> Download
+            <a href="{{ url('/download/' . $order->order_id . '/c') }}" class="btn-download" download>
+            <i class="fa-solid fa-download"></i> Download
             </a>
         </div>
 
